@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okna – Fenster – Driesener Str.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+:root{--bg:#0f1117;--surface:#181c27;--card:#1e2336;--border:#2a3050;--accent:#4f8cff;--accent2:#f5c518;--renov:#ff6b35;--neu:#38e07b;--text:#e8eaf6;--muted:#7b82a8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+
+header{padding:2rem 2rem 1.2rem;border-bottom:2px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;background:linear-gradient(135deg,#12172a,#1a2040);}
+header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;}
+header h1 span{color:var(--accent);}
+.header-sub{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;}
+.stat{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.4rem 1rem;}
+.stat-val{font-size:1.4rem;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace;}
+.stat-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.header-controls{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.lang-switch{display:flex;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.lang-btn{background:var(--card);border:none;color:var(--muted);padding:.3rem 1rem;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.lang-btn.active{background:var(--accent);color:#fff;}
+.hdr-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.3rem .9rem;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.35rem;}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent);}
+.hdr-btn.yellow{color:var(--accent2);border-color:rgba(245,197,24,.4);}
+.hdr-btn.yellow:hover{background:var(--accent2);color:#000;border-color:var(--accent2);}
+.hdr-btn.green{color:var(--neu);border-color:rgba(56,224,123,.4);}
+.hdr-btn.green:hover{background:var(--neu);color:#000;border-color:var(--neu);}
+
+/* SYNC BAR */
+.sync-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.sync-info{font-size:.72rem;color:var(--muted);flex:1;}
+.sync-info strong{color:var(--text);}
+.sync-status{font-size:.68rem;font-family:'JetBrains Mono',monospace;padding:.2rem .6rem;border-radius:12px;white-space:nowrap;}
+.sync-status.ok{background:rgba(56,224,123,.12);color:var(--neu);border:1px solid rgba(56,224,123,.3);}
+.sync-status.empty{background:rgba(123,130,168,.1);color:var(--muted);border:1px solid var(--border);}
+.sync-status.warn{background:rgba(255,107,53,.12);color:var(--renov);border:1px solid rgba(255,107,53,.3);}
+
+.filters{padding:1rem 2rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);}
+.filter-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:.25rem .9rem;font-family:'Syne',sans-serif;font-size:.75rem;cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.search-box{margin-left:auto;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.25rem 1rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.75rem;width:180px;outline:none;}
+.search-box:focus{border-color:var(--accent);}
+
+main{padding:1.5rem 2rem;}
+.section-divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0 1rem;}
+.section-divider h2{font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent2);white-space:nowrap;}
+.section-divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--accent2),transparent);}
+.vh-group{margin-bottom:2rem;}
+.vh-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:var(--muted);margin-bottom:.8rem;padding-left:.5rem;border-left:3px solid var(--accent);}
+.windows-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
+
+.window-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:border-color .2s;}
+.window-card:hover{border-color:var(--accent);}
+.window-card.renov{border-left:3px solid var(--renov);}
+.window-card.neu{border-left:3px solid var(--neu);}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.6rem;gap:.4rem;}
+.room-name{font-size:.9rem;font-weight:800;line-height:1.2;}
+.room-name .lang2{display:block;font-size:.65rem;color:var(--muted);font-weight:400;margin-top:.1rem;}
+.location-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:.1rem .4rem;white-space:nowrap;}
+.badge-row{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.badge{font-size:.6rem;border-radius:4px;padding:.1rem .4rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;}
+.badge-wings{background:rgba(79,140,255,.15);color:var(--accent);border:1px solid rgba(79,140,255,.3);}
+.badge-count{background:rgba(245,197,24,.12);color:var(--accent2);border:1px solid rgba(245,197,24,.3);}
+.badge-renov{background:rgba(255,107,53,.15);color:var(--renov);border:1px solid rgba(255,107,53,.3);}
+.badge-neu{background:rgba(56,224,123,.12);color:var(--neu);border:1px solid rgba(56,224,123,.3);}
+.badge-balkon{background:rgba(150,100,255,.15);color:#b48eff;border:1px solid rgba(150,100,255,.3);}
+.window-drawing{width:100%;background:#10141f;border-radius:8px;border:1px solid var(--border);display:flex;justify-content:center;align-items:center;padding:.5rem;margin-bottom:.8rem;}
+
+.config-block{border-top:1px solid var(--border);padding-top:.7rem;margin-top:.6rem;}
+.config-block-title{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;}
+.config-block-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.dims-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.8rem;flex-wrap:wrap;}
+.dim-label{font-size:.62rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.dim-input{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;width:64px;padding:.2rem .4rem;outline:none;text-align:center;}
+.dim-input:focus{border-color:var(--accent);}
+.dim-x{color:var(--muted);font-size:.8rem;}
+.dim-unit{font-size:.65rem;color:var(--muted);}
+.dim-save{background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:.65rem;font-family:'Syne',sans-serif;padding:.25rem .6rem;cursor:pointer;}
+.dim-save:hover{opacity:.8;}
+.dim-saved{font-size:.65rem;color:var(--neu);display:none;}
+.form-row{display:grid;gap:.4rem;margin-bottom:.4rem;}
+.form-row-2{grid-template-columns:1fr 1fr;}
+.form-row-1{grid-template-columns:1fr;}
+.field-group{display:flex;flex-direction:column;gap:.2rem;}
+.field-label{font-size:.58rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;}
+.opening-select,.config-select{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.28rem .4rem;width:100%;outline:none;cursor:pointer;}
+.opening-select:focus,.config-select:focus{border-color:var(--accent);}
+.color-input{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.28rem .4rem;width:100%;outline:none;}
+.color-input:focus{border-color:var(--accent);}
+.subseries-wrap{margin-top:.3rem;display:none;}
+.subseries-wrap.visible{display:block;}
+.wing-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:.4rem;align-items:center;margin-bottom:.4rem;}
+.wing-num{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--accent2);background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);border-radius:5px;padding:.15rem .4rem;text-align:center;white-space:nowrap;line-height:1.5;}
+.wing-num .lang2{display:block;font-size:.5rem;color:rgba(245,197,24,.5);font-weight:400;}
+.transom-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:.4rem;align-items:center;margin-bottom:.4rem;}
+.transom-label{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:#5a6a9a;background:rgba(90,106,154,.12);border:1px solid rgba(90,106,154,.25);border-radius:5px;padding:.15rem .4rem;text-align:center;white-space:nowrap;line-height:1.5;}
+.transom-label .lang2{display:block;font-size:.5rem;color:rgba(90,106,154,.55);}
+.opening-notes{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:.72rem;padding:.4rem .6rem;resize:vertical;min-height:42px;outline:none;margin-top:.3rem;}
+.opening-notes:focus{border-color:var(--accent);}
+.opening-notes::placeholder{color:var(--muted);}
+.renov-note{margin-top:.6rem;font-size:.62rem;color:var(--renov);background:rgba(255,107,53,.08);border-radius:6px;padding:.35rem .55rem;border:1px solid rgba(255,107,53,.2);line-height:1.5;}
+.info-note{margin-top:.6rem;font-size:.62rem;color:var(--accent2);background:rgba(245,197,24,.07);border-radius:6px;padding:.35rem .55rem;border:1px solid rgba(245,197,24,.2);line-height:1.5;}
+.hidden{display:none!important;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;}
+.modal h3{font-size:1.1rem;font-weight:800;margin-bottom:.4rem;}
+.modal p{font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.5;}
+.modal textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.6rem;min-height:160px;outline:none;resize:vertical;margin-bottom:1rem;}
+.modal textarea:focus{border-color:var(--accent);}
+.modal-btns{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap;}
+.modal-btn{border:none;border-radius:8px;padding:.4rem 1.2rem;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.modal-btn.cancel{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
+.modal-btn.cancel:hover{border-color:var(--accent);color:var(--text);}
+.modal-btn.primary{background:var(--accent);color:#fff;}
+.modal-btn.primary:hover{opacity:.85;}
+.modal-btn.danger{background:var(--renov);color:#fff;}
+.modal-btn.danger:hover{opacity:.85;}
+.modal-msg{font-size:.72rem;padding:.4rem .7rem;border-radius:6px;margin-bottom:.8rem;display:none;}
+.modal-msg.ok{background:rgba(56,224,123,.12);color:var(--neu);border:1px solid rgba(56,224,123,.3);}
+.modal-msg.err{background:rgba(255,107,53,.12);color:var(--renov);border:1px solid rgba(255,107,53,.3);}
+
+footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.7rem;border-top:1px solid var(--border);}
+
+/* PRINT */
+@media print{
+  :root{--bg:#fff;--surface:#f5f5f5;--card:#fff;--border:#ccc;--accent:#1a4fa0;--accent2:#7a5800;--renov:#c04000;--neu:#1a7a40;--text:#111;--muted:#555;}
+  body{background:#fff;color:#111;font-family:Arial,sans-serif;font-size:8pt;}
+  header,.filters,.hdr-btn,.lang-switch,.dim-save,.dim-saved,.filter-btn,.filter-label,.search-box,footer,.sync-bar,.modal-overlay{display:none!important;}
+  .print-header{display:block!important;}
+  main{padding:.3cm .8cm;}
+  .section-divider h2{color:#1a4fa0;font-size:10pt;border-bottom:1.5px solid #1a4fa0;padding-bottom:2px;margin-bottom:6px;}
+  .section-divider::after{display:none;}
+  .vh-group{margin-bottom:10px;break-inside:avoid;}
+  .vh-title{color:#555;font-size:7pt;border-left:3px solid #1a4fa0;padding-left:4px;margin-bottom:5px;}
+  .windows-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .window-card{border:1px solid #ccc;border-radius:5px;padding:6px;break-inside:avoid;page-break-inside:avoid;}
+  .window-card.renov{border-left:3px solid #c04000;}
+  .window-card.neu{border-left:3px solid #1a7a40;}
+  .room-name{font-size:8pt;font-weight:700;}.room-name .lang2{font-size:6pt;color:#666;}
+  .location-tag{font-size:6pt;color:#555;border:1px solid #ccc;border-radius:3px;padding:1px 3px;}
+  .badge{font-size:5.5pt;padding:1px 3px;}
+  .badge-wings{background:#e8f0ff;color:#1a4fa0;border:1px solid #b0c4f0;}
+  .badge-count{background:#fff8e0;color:#7a5800;border:1px solid #e0c860;}
+  .badge-renov{background:#fff0e8;color:#c04000;border:1px solid #f0b080;}
+  .badge-neu{background:#e8fff0;color:#1a7a40;border:1px solid #80e0a0;}
+  .badge-balkon{background:#f0e8ff;color:#5000a0;border:1px solid #c090f0;}
+  .window-drawing{background:#f8faff;border:1px solid #ccc;padding:3px;margin-bottom:5px;}
+  .config-block{border-top:1px solid #ddd;padding-top:4px;margin-top:4px;}
+  .config-block-title{font-size:6pt;color:#888;margin-bottom:3px;}
+  .config-block-title::after{background:#ddd;}
+  .dims-row{margin-bottom:4px;}
+  .dim-label{font-size:6.5pt;color:#555;}
+  .dim-input{border:1px solid #bbb;border-radius:3px;font-size:7.5pt;color:#1a4fa0;font-weight:700;width:46px;padding:1px 3px;background:#fff;}
+  .dim-x,.dim-unit{font-size:6.5pt;color:#666;}
+  .field-label{font-size:5.5pt;color:#888;}
+  .form-row{gap:3px;margin-bottom:3px;}
+  .opening-select,.config-select{border:1px solid #bbb;border-radius:3px;font-size:6.5pt;color:#111;background:#fff;padding:1px 3px;}
+  .color-input{border:1px solid #bbb;border-radius:3px;font-size:6.5pt;color:#111;background:#fff;padding:1px 3px;}
+  .subseries-wrap.visible{display:block;}
+  .wing-row,.transom-row{display:grid;gap:3px;margin-bottom:2px;}
+  .wing-row{grid-template-columns:auto 1fr 1fr;}.transom-row{grid-template-columns:auto 1fr 1fr;}
+  .wing-num{font-size:6pt;color:#7a5800;background:#fff8e0;border:1px solid #e0c860;border-radius:3px;padding:1px 3px;}
+  .wing-num .lang2{font-size:5pt;color:#b09040;}
+  .transom-label{font-size:6pt;color:#4a5a8a;background:#eef0ff;border:1px solid #b0b8e0;border-radius:3px;padding:1px 3px;}
+  .transom-label .lang2{font-size:5pt;}
+  .opening-notes{border:1px solid #bbb;border-radius:3px;font-size:6.5pt;min-height:24px;padding:2px 4px;background:#fafafa;}
+  .renov-note{font-size:6pt;color:#c04000;background:#fff0e8;border:1px solid #f0b080;border-radius:3px;padding:2px 4px;margin-top:3px;}
+  .info-note{font-size:6pt;color:#7a5800;background:#fff8e0;border:1px solid #e0c860;border-radius:3px;padding:2px 4px;margin-top:3px;}
+}
+.print-header{display:none;margin-bottom:.5cm;}
+.print-header h2{font-size:14pt;font-weight:700;color:#1a4fa0;margin-bottom:3px;}
+.print-header p{font-size:8pt;color:#555;}
+.print-header hr{border:none;border-top:2px solid #1a4fa0;margin:5px 0;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Okna – <span>Driesener Str.</span></h1>
+    <div class="header-sub" id="hdr-sub">Dokumentacja techniczna · konfigurator per okno</div>
+  </div>
+  <div class="header-right">
+    <div class="header-controls">
+      <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('pl',this)">PL</button>
+        <button class="lang-btn" onclick="setLang('de',this)">DE</button>
+      </div>
+      <button class="hdr-btn green" onclick="showExport()">⬆ <span id="lbl-export">Eksport danych</span></button>
+      <button class="hdr-btn" onclick="showImport()" style="color:var(--accent);border-color:rgba(79,140,255,.4);">⬇ <span id="lbl-import">Import danych</span></button>
+      <button class="hdr-btn" onclick="doDocx()" style="color:#b48eff;border-color:rgba(180,142,255,.4);">📄 <span id="lbl-docx">Pobierz DOCX</span></button>
+      <button class="hdr-btn yellow" onclick="doPrint()">🖨 <span id="print-btn-label">Drukuj PL</span></button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">57</div><div class="stat-label" data-pl="Łącznie" data-de="Gesamt">Łącznie</div></div>
+      <div class="stat"><div class="stat-val">34</div><div class="stat-label" data-pl="Zachód" data-de="Westseite">Zachód</div></div>
+      <div class="stat"><div class="stat-val">23</div><div class="stat-label" data-pl="Południe" data-de="Südseite">Południe</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- SYNC STATUS BAR -->
+<div class="sync-bar">
+  <div class="sync-info" id="sync-info">Dane przechowywane lokalnie w tej przeglądarce.</div>
+  <span class="sync-status empty" id="sync-status">Brak danych</span>
+</div>
+
+<div class="filters">
+  <span class="filter-label" data-pl="Filtr:" data-de="Filter:">Filtr:</span>
+  <button class="filter-btn active" onclick="filterAll(this)" data-pl="Wszystkie" data-de="Alle">Wszystkie</button>
+  <button class="filter-btn" onclick="filterSide('zachod',this)" data-pl="◀ Zachód" data-de="◀ West">◀ Zachód</button>
+  <button class="filter-btn" onclick="filterSide('poludnie',this)" data-pl="▼ Południe" data-de="▼ Süd">▼ Południe</button>
+  <button class="filter-btn" onclick="filterTag('renov',this)" data-pl="Renowacja" data-de="Überarbeitung">Renowacja</button>
+  <button class="filter-btn" onclick="filterTag('neu',this)" data-pl="Nowe" data-de="Neu">Nowe</button>
+  <button class="filter-btn" onclick="filterTag('balkon',this)" data-pl="Balkonowe" data-de="Balkontür">Balkonowe</button>
+  <input class="search-box" id="searchbox" type="text" placeholder="Szukaj (VH2, salon...)" oninput="searchCards(this.value)">
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay hidden" id="modal-export">
+  <div class="modal">
+    <h3 id="exp-title">⬆ Eksport danych</h3>
+    <p id="exp-desc">Skopiuj poniższy kod i wyślij go (WhatsApp, email, SMS) na inne urządzenie. Tam wklej go w oknie Importu.</p>
+    <div class="modal-msg ok" id="exp-msg"></div>
+    <textarea id="exp-area" readonly onclick="this.select()"></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModals()">Zamknij</button>
+      <button class="modal-btn primary" onclick="copyExport()">📋 Kopiuj</button>
+      <button class="modal-btn primary" onclick="downloadExport()">⬇ Pobierz plik</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay hidden" id="modal-import">
+  <div class="modal">
+    <h3 id="imp-title">⬇ Import danych</h3>
+    <p id="imp-desc">Wklej kod z innego urządzenia lub załaduj plik eksportu. Uwaga: nadpisze aktualne dane!</p>
+    <div class="modal-msg" id="imp-msg"></div>
+    <textarea id="imp-area" placeholder="Wklej tutaj kod eksportu..."></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModals()">Anuluj</button>
+      <label class="modal-btn primary" style="cursor:pointer;">📂 Załaduj plik<input type="file" accept=".json" style="display:none" onchange="loadFile(this)"></label>
+      <button class="modal-btn danger" onclick="doImport()">✓ Importuj</button>
+    </div>
+  </div>
+</div>
+
+<div class="print-header" id="print-header">
+  <h2 id="print-title">Okna – Driesener Str.</h2>
+  <p id="print-sub">Dokumentacja techniczna · 57 okien</p>
+  <hr>
+</div>
+
+<main id="main"></main>
+<footer>Driesener Str. · 57 <span data-pl="okien" data-de="Fenster">okien</span> · <span data-pl="dane zapisywane lokalnie · eksport/import między urządzeniami" data-de="Daten lokal · Export/Import zwischen Geräten">dane zapisywane lokalnie · eksport/import między urządzeniami</span></footer>
+
+<script>
+let LANG='pl';
+
+const T={
+  pl:{
+    width:'szer.',height:'wys.',save:'Zapisz',saved:'\u2713',
+    openingTitle:'Otwieranie \u2013 ka\u017Cde skrzyd\u0142o osobno',
+    materialTitle:'Materia\u0142 i profil',colorTitle:'Kolor / okleina',glassTitle:'Szyba',
+    transom:'na\u015Bwietle',wing:'Skrzyd\u0142o',
+    notes:'Uwagi (zaci\u0119te, wymaga regulacji, brak uszczelki...)',
+    hdrSub:'Dokumentacja techniczna \u00B7 konfigurator per okno',
+    searchPh:'Szukaj (VH2, salon...)',
+    secWest:'\u25C0 Strona Zachodnia (34 szt.)',secSouth:'\u25BC Strona Po\u0142udniowa (23 szt.)',
+    west:'Strona zachodnia',south:'Strona po\u0142udniowa',
+    printTitle:'Okna \u2013 Driesener Str.',
+    printSub:'Dokumentacja techniczna \u00B7 57 okien \u00B7 Zach\u00F3d 34 szt. / Po\u0142udnie 23 szt.',
+    printBtn:'Drukuj PL',
+    exportBtn:'Eksport danych',importBtn:'Import danych',
+    colorIn:'Kolor wewn\u0119trzny',colorOut:'Kolor zewn\u0119trzny',
+    syncInfo:'Dane przechowywane lokalnie w tej przegl\u0105darce.',
+    syncFilled:'wype\u0142nionych okien',syncEmpty:'Brak danych',
+    otype:[{v:'',l:'\u2013 typ \u2013'},{v:'rozwierne',l:'Rozwierne'},{v:'uchylne',l:'Uchylne'},{v:'roz-uch',l:'Rozwierno-uchylne'},{v:'stale',l:'Sta\u0142e (fix)'},{v:'tylko-uchyl',l:'Tylko uchy\u0142'},{v:'hautau',l:'Hautau (uchy\u0142 g\u00F3rny)'}],
+    odir:[{v:'',l:'\u2013 kierunek \u2013'},{v:'lewo',l:'Lewo'},{v:'prawo',l:'Prawo'},{v:'do-wewn',l:'Do wewn\u0105trz'},{v:'na-zewn',l:'Na zewn\u0105trz'},{v:'obust',l:'Obustronnie'}],
+    material:[{v:'',l:'\u2013 materia\u0142 \u2013'},{v:'pcv',l:'PCV'},{v:'drewno',l:'Drewno'},{v:'aluminium',l:'Aluminium'}],
+    pcvBrand:[{v:'',l:'\u2013 producent \u2013'},{v:'gealan',l:'Gealan'},{v:'aluplast',l:'Aluplast'}],
+    gealan:[{v:'',l:'\u2013 seria \u2013'},{v:'linear',l:'Linear'},{v:'kontur',l:'Kontur-antyw\u0142amaniowy'}],
+    aluplast:[{v:'',l:'\u2013 seria \u2013'},{v:'8000',l:'Seria 8000'},{v:'7000',l:'Seria 7000'},{v:'4000',l:'Seria 4000'}],
+    wood:[{v:'',l:'\u2013 gatunek \u2013'},{v:'sosna',l:'Sosna'},{v:'meranti',l:'Meranti'},{v:'inne',l:'Inne drewno'}],
+    glass:[{v:'',l:'\u2013 szyba \u2013'},{v:'2',l:'2-szybowa'},{v:'3',l:'3-szybowa'}],
+    rooms:{'Salon':'Salon','Kuchnia/\u0141azienka':'Kuchnia/\u0141azienka','Sypialnia':'Sypialnia','Pok\u00F3j od ulicy':'Pok\u00F3j od ulicy','Ma\u0142y pok\u00F3j':'Ma\u0142y pok\u00F3j','\u2014':'\u2014'},
+    pos:{'lewe':'lewe','\u015Brodkowe':'\u015Brodkowe','prawe':'prawe'},
+    badges:{count:'szt.',wings:'skrzyd\u0142owe',renov:'renowacja',neu:'nowe',balkon:'balkonowe'},
+  },
+  de:{
+    width:'Br.',height:'H\u00F6.',save:'Speichern',saved:'\u2713',
+    openingTitle:'\u00D6ffnungsart \u2013 jeder Fl\u00FCgel einzeln',
+    materialTitle:'Material und Profil',colorTitle:'Farbe / Folie',glassTitle:'Verglasung',
+    transom:'Oberlicht',wing:'Fl\u00FCgel',
+    notes:'Anmerkungen (klemmt, braucht Einstellung, Dichtung fehlt...)',
+    hdrSub:'Technische Dokumentation \u00B7 Konfigurator je Fenster',
+    searchPh:'Suchen (VH2, Wohnzimmer...)',
+    secWest:'\u25C0 Westseite (34 Stk.)',secSouth:'\u25BC S\u00FCdseite (23 Stk.)',
+    west:'Westseite',south:'S\u00FCdseite',
+    printTitle:'Fenster \u2013 Driesener Str.',
+    printSub:'Technische Dokumentation \u00B7 57 Fenster \u00B7 West 34 Stk. / S\u00FCd 23 Stk.',
+    printBtn:'Drucken DE',
+    exportBtn:'Daten exportieren',importBtn:'Daten importieren',
+    colorIn:'Innenfarbe',colorOut:'Au\u00DFenfarbe',
+    syncInfo:'Daten lokal in diesem Browser gespeichert.',
+    syncFilled:'ausgef\u00FCllte Fenster',syncEmpty:'Keine Daten',
+    otype:[{v:'',l:'\u2013 Typ \u2013'},{v:'rozwierne',l:'Drehfl\u00FCgel'},{v:'uchylne',l:'Kippfl\u00FCgel'},{v:'roz-uch',l:'Dreh-Kipp'},{v:'stale',l:'Festverglasung'},{v:'tylko-uchyl',l:'Nur Kipp'},{v:'hautau',l:'Hautau (Oberkipp)'}],
+    odir:[{v:'',l:'\u2013 Richtung \u2013'},{v:'lewo',l:'Links'},{v:'prawo',l:'Rechts'},{v:'do-wewn',l:'Nach innen'},{v:'na-zewn',l:'Nach au\u00DFen'},{v:'obust',l:'Beidseitig'}],
+    material:[{v:'',l:'\u2013 Material \u2013'},{v:'pcv',l:'PVC'},{v:'drewno',l:'Holz'},{v:'aluminium',l:'Aluminium'}],
+    pcvBrand:[{v:'',l:'\u2013 Hersteller \u2013'},{v:'gealan',l:'Gealan'},{v:'aluplast',l:'Aluplast'}],
+    gealan:[{v:'',l:'\u2013 Serie \u2013'},{v:'linear',l:'Linear'},{v:'kontur',l:'Kontur-einbruchhemmend'}],
+    aluplast:[{v:'',l:'\u2013 Serie \u2013'},{v:'8000',l:'Serie 8000'},{v:'7000',l:'Serie 7000'},{v:'4000',l:'Serie 4000'}],
+    wood:[{v:'',l:'\u2013 Holzart \u2013'},{v:'sosna',l:'Kiefer'},{v:'meranti',l:'Meranti'},{v:'inne',l:'Sonstiges Holz'}],
+    glass:[{v:'',l:'\u2013 Verglasung \u2013'},{v:'2',l:'2-fach'},{v:'3',l:'3-fach'}],
+    rooms:{'Salon':'Wohnzimmer','Kuchnia/\u0141azienka':'K\u00FCche/Bad','Sypialnia':'Schlafzimmer','Pok\u00F3j od ulicy':'Stra\u00DFenzimmer','Ma\u0142y pok\u00F3j':'Kleines Zimmer','\u2014':'\u2014'},
+    pos:{'lewe':'links','\u015Brodkowe':'Mitte','prawe':'rechts'},
+    badges:{count:'Stk.',wings:'fl\u00FCgelig',renov:'\u00DCberarbeitung',neu:'neu',balkon:'Balkont\u00FCr'},
+  }
+};
+
+const RENOV_PL="Renowacja: boki + listwa g\u00F3rna, uszczelnienie, gruntowanie i szlifowanie, 2\u00D7 lakierowanie";
+const RENOV_DE="\u00DCberarbeitung: Seiten + Oberleiste, abdichten, grundieren und schleifen, 2\u00D7 lackieren";
+
+const DATA={
+  zachod:[
+    {vh:"VH1",pos:"lewe",    room:"Salon",            wings:2,count:1,breite:97, hoehe:201,renov:true, neu:false,balkon:false,notePL:RENOV_PL+" + parapet",noteDE:RENOV_DE+" + Fensterbrett"},
+    {vh:"VH1",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka", wings:2,count:2,breite:109,hoehe:190,renov:false,neu:false,balkon:false},
+    {vh:"VH1",pos:"\u015Brodkowe",room:"Salon",             wings:4,count:1,breite:251,hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH1",pos:"\u015Brodkowe",room:"Sypialnia",         wings:2,count:2,breite:97, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH1",pos:"prawe",   room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:186,renov:false,neu:false,balkon:false},
+    {vh:"VH1",pos:"prawe",   room:"Pok\u00F3j od ulicy",    wings:2,count:2,breite:96, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"lewe",    room:"\u2014",                 wings:2,count:1,breite:96, hoehe:202,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:187,renov:false,neu:false,balkon:false,notePL:"Okucia Hautau",noteDE:"mit Hautau"},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Salon",             wings:3,count:1,breite:251,hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Sypialnia",         wings:2,count:2,breite:97, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"prawe",   room:"Pok\u00F3j od ulicy",    wings:2,count:2,breite:96, hoehe:201,renov:false,neu:true, balkon:false},
+    {vh:"VH3",pos:"lewe",    room:"Sypialnia",         wings:2,count:1,breite:97, hoehe:192,renov:true, neu:false,balkon:false,notePL:RENOV_PL,noteDE:RENOV_DE},
+    {vh:"VH3",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:109,hoehe:190,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"\u015Brodkowe",room:"Salon",             wings:4,count:1,breite:251,hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"\u015Brodkowe",room:"Sypialnia",         wings:2,count:2,breite:97, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"prawe",   room:"Pok\u00F3j od ulicy",    wings:2,count:2,breite:96, hoehe:192,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"lewe",    room:"Sypialnia",         wings:2,count:1,breite:95, hoehe:191,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:187,renov:false,neu:false,balkon:false,notePL:"Okucia Hautau",noteDE:"mit Hautau"},
+    {vh:"VH4",pos:"\u015Brodkowe",room:"Salon",             wings:3,count:1,breite:251,hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"\u015Brodkowe",room:"Sypialnia",         wings:2,count:2,breite:97, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"prawe",   room:"Pok\u00F3j od ulicy",    wings:2,count:2,breite:97, hoehe:193,renov:false,neu:false,balkon:false},
+  ],
+  poludnie:[
+    {vh:"VH1",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:186,renov:false,neu:false,balkon:false},
+    {vh:"VH1",pos:"\u015Brodkowe",room:"Salon",             wings:3,count:1,breite:248,hoehe:203,renov:true, neu:false,balkon:false,notePL:RENOV_PL,noteDE:RENOV_DE},
+    {vh:"VH1",pos:"prawe",   room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:96, hoehe:221,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"lewe",    room:"Salon",             wings:3,count:1,breite:250,hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"lewe",    room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:96, hoehe:201,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:186,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Salon",             wings:3,count:1,breite:248,hoehe:203,renov:false,neu:false,balkon:false},
+    {vh:"VH2",pos:"\u015Brodkowe",room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:96, hoehe:283,renov:false,neu:false,balkon:true},
+    {vh:"VH2",pos:"prawe",   room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:96, hoehe:221,renov:true, neu:false,balkon:false,notePL:RENOV_PL,noteDE:RENOV_DE},
+    {vh:"VH3",pos:"lewe",    room:"Salon",             wings:3,count:1,breite:250,hoehe:199,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"lewe",    room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:96, hoehe:202,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:185,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"\u015Brodkowe",room:"Salon",             wings:"3+2",count:1,breite:253,hoehe:190,renov:false,neu:false,balkon:false},
+    {vh:"VH3",pos:"prawe",   room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:97, hoehe:194,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"lewe",    room:"Salon",             wings:2,count:1,breite:95, hoehe:267,renov:false,neu:false,balkon:true,notePL:"+ skrzyd\u0142a boczne 193\u00D759 cm",noteDE:"+ Seitenfl\u00FCgel 193\u00D759 cm"},
+    {vh:"VH4",pos:"lewe",    room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:95, hoehe:193,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"\u015Brodkowe",room:"Kuchnia/\u0141azienka",  wings:2,count:2,breite:95, hoehe:185,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"\u015Brodkowe",room:"Salon",             wings:"3+2",count:1,breite:253,hoehe:190,renov:false,neu:false,balkon:false},
+    {vh:"VH4",pos:"prawe",   room:"Ma\u0142y pok\u00F3j",        wings:2,count:1,breite:97, hoehe:194,renov:false,neu:false,balkon:false},
+  ]
+};
+
+// \u2500\u2500 STORAGE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function sk(id){return'win_'+id;}
+function loadSt(id){try{return JSON.parse(localStorage.getItem(sk(id)))||{};}catch(e){return {};}}
+function saveSt(id,o){localStorage.setItem(sk(id),JSON.stringify(o));updateSyncStatus();}
+
+function updateSyncStatus(){
+  let filled=0;
+  for(let i=1;i<=200;i++){
+    const st=loadSt('c'+i);
+    if(Object.keys(st).length>0)filled++;
+    if(filled>0&&Object.keys(loadSt('c'+i)).length===0&&i>100)break;
+  }
+  const t=T[LANG];
+  const el=document.getElementById('sync-status');
+  const info=document.getElementById('sync-info');
+  if(info)info.textContent=t.syncInfo;
+  if(el){
+    if(filled>0){el.textContent=filled+' '+t.syncFilled;el.className='sync-status ok';}
+    else{el.textContent=t.syncEmpty;el.className='sync-status empty';}
+  }
+}
+
+// \u2500\u2500 EXPORT / IMPORT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function getAllData(){
+  const out={v:1,ts:new Date().toISOString(),data:{}};
+  for(let i=1;i<=200;i++){
+    const k='c'+i;
+    const st=loadSt(k);
+    if(Object.keys(st).length>0)out.data[k]=st;
+  }
+  return out;
+}
+
+function showExport(){
+  const payload=getAllData();
+  const json=JSON.stringify(payload,null,2);
+  document.getElementById('exp-area').value=json;
+  document.getElementById('modal-export').classList.remove('hidden');
+  document.getElementById('exp-msg').style.display='none';
+  setTimeout(()=>document.getElementById('exp-area').select(),100);
+}
+
+function copyExport(){
+  const area=document.getElementById('exp-area');
+  area.select();
+  try{
+    navigator.clipboard.writeText(area.value).then(()=>showExpMsg('\u2713 Skopiowano do schowka!','ok')).catch(()=>{document.execCommand('copy');showExpMsg('\u2713 Skopiowano!','ok');});
+  }catch(e){document.execCommand('copy');showExpMsg('\u2713 Skopiowano!','ok');}
+}
+
+function downloadExport(){
+  const payload=getAllData();
+  const json=JSON.stringify(payload,null,2);
+  const date=new Date().toISOString().slice(0,10);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`okna_driesener_${date}.json`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  showExpMsg('\u2713 Plik pobrany!','ok');
+}
+
+function showExpMsg(msg,type){
+  const el=document.getElementById('exp-msg');
+  el.textContent=msg;el.className='modal-msg '+type;el.style.display='block';
+}
+
+function showImport(){
+  document.getElementById('imp-area').value='';
+  document.getElementById('imp-msg').style.display='none';
+  document.getElementById('modal-import').classList.remove('hidden');
+}
+
+function loadFile(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{document.getElementById('imp-area').value=e.target.result;};
+  reader.readAsText(file);
+}
+
+function doImport(){
+  const raw=document.getElementById('imp-area').value.trim();
+  if(!raw){showImpMsg('Wklej lub za\u0142aduj dane eksportu!','err');return;}
+  try{
+    const payload=JSON.parse(raw);
+    if(!payload.data)throw new Error('Nieprawid\u0142owy format');
+    let count=0;
+    Object.keys(payload.data).forEach(k=>{
+      localStorage.setItem(k,JSON.stringify(payload.data[k]));count++;
+    });
+    showImpMsg(`\u2713 Wczytano dane dla ${count} okien. Od\u015Bwie\u017Cam...`,'ok');
+    setTimeout(()=>{closeModals();cid=0;render();updateSyncStatus();},1200);
+  }catch(e){showImpMsg('B\u0142\u0105d: nieprawid\u0142owy format danych. Sprawd\u017A czy wklejasz pe\u0142ny kod eksportu.','err');}
+}
+
+function showImpMsg(msg,type){
+  const el=document.getElementById('imp-msg');
+  el.textContent=msg;el.className='modal-msg '+type;el.style.display='block';
+}
+
+function closeModals(){
+  document.getElementById('modal-export').classList.add('hidden');
+  document.getElementById('modal-import').classList.add('hidden');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals();});
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModals();}));
+
+// \u2500\u2500 SVG \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function selOpts(opts,val){return opts.map(o=>`<option value="${o.v}"${o.v===val?' selected':''}>${o.l}</option>`).join('');}
+
+function drawWin(breite,hoehe,wings,id){
+  const W=230,H=148,pL=14,pT=14,pR=34,pB=26;
+  const fW=W-pL-pR,fH=H-pT-pB;
+  const tH=Math.round(fH*0.20),mH=fH-tH;
+  const nW=typeof wings==='string'?parseInt(wings):wings;
+  const wW=fW/nW;
+  const fc="#3a4a7a",gl="rgba(79,140,255,0.09)",tgl="rgba(200,220,255,0.05)",dc="#4f8cff";
+  let s=[];
+  s.push(`<rect x="${pL}" y="${pT}" width="${fW}" height="${tH}" fill="${tgl}" stroke="${fc}" stroke-width="2"/>`);
+  s.push(`<text id="svg-tl-${id}" x="${pL+fW/2}" y="${pT+tH/2+3.5}" text-anchor="middle" fill="#5a6a9a" font-size="7" font-family="JetBrains Mono">${LANG==='de'?'Oberlicht':'na\u015Bwietle'}</text>`);
+  const mY=pT+tH;
+  s.push(`<rect x="${pL}" y="${mY}" width="${fW}" height="${mH}" fill="${gl}" stroke="${fc}" stroke-width="2.5"/>`);
+  for(let i=0;i<nW;i++){
+    if(i>0){const dx=pL+i*wW;s.push(`<line x1="${dx}" y1="${mY}" x2="${dx}" y2="${mY+mH}" stroke="${fc}" stroke-width="2"/>`);}
+    s.push(`<text x="${pL+i*wW+wW/2}" y="${mY+mH/2+4}" text-anchor="middle" fill="#3a4a7a" font-size="10" font-family="JetBrains Mono" font-weight="bold">${i+1}</text>`);
+  }
+  const dY=pT+fH+8;
+  s.push(`<line x1="${pL}" y1="${dY}" x2="${pL+fW}" y2="${dY}" stroke="${dc}" stroke-width="0.8" opacity="0.7"/>`);
+  s.push(`<line x1="${pL}" y1="${dY-3}" x2="${pL}" y2="${dY+3}" stroke="${dc}" stroke-width="1"/>`);
+  s.push(`<line x1="${pL+fW}" y1="${dY-3}" x2="${pL+fW}" y2="${dY+3}" stroke="${dc}" stroke-width="1"/>`);
+  s.push(`<text id="svg-b-${id}" x="${pL+fW/2}" y="${dY+9}" text-anchor="middle" fill="${dc}" font-size="8" font-family="JetBrains Mono" font-weight="bold">${breite} cm</text>`);
+  s.push(`<text x="${pL+fW/2}" y="${dY+18}" text-anchor="middle" fill="#2a3560" font-size="6" font-family="JetBrains Mono">Breite / szeroko\u015B\u0107</text>`);
+  const dX=pL+fW+8;
+  s.push(`<line x1="${dX}" y1="${pT}" x2="${dX}" y2="${pT+fH}" stroke="${dc}" stroke-width="0.8" opacity="0.7"/>`);
+  s.push(`<line x1="${dX-3}" y1="${pT}" x2="${dX+3}" y2="${pT}" stroke="${dc}" stroke-width="1"/>`);
+  s.push(`<line x1="${dX-3}" y1="${pT+fH}" x2="${dX+3}" y2="${pT+fH}" stroke="${dc}" stroke-width="1"/>`);
+  s.push(`<text id="svg-h-${id}" x="${dX+12}" y="${pT+fH/2+3}" text-anchor="middle" fill="${dc}" font-size="8" font-family="JetBrains Mono" font-weight="bold" transform="rotate(90,${dX+12},${pT+fH/2})">${hoehe} cm</text>`);
+  s.push(`<text x="${dX+22}" y="${pT+fH/2+3}" text-anchor="middle" fill="#2a3560" font-size="6" font-family="JetBrains Mono" transform="rotate(90,${dX+22},${pT+fH/2})">H\u00F6he/wys.</text>`);
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${s.join('')}</svg>`;
+}
+
+function onMaterialChange(id){
+  const mat=document.getElementById('mat-'+id).value;
+  document.getElementById('brand-wrap-'+id).style.display=mat==='pcv'?'block':'none';
+  document.getElementById('wood-wrap-'+id).style.display=mat==='drewno'?'block':'none';
+  onBrandChange(id);saveConfig(id);
+}
+function onBrandChange(id){
+  const brand=document.getElementById('brand-'+id)?document.getElementById('brand-'+id).value:'';
+  const gw=document.getElementById('gealan-wrap-'+id);
+  const aw=document.getElementById('aluplast-wrap-'+id);
+  if(gw)gw.style.display=brand==='gealan'?'block':'none';
+  if(aw)aw.style.display=brand==='aluplast'?'block':'none';
+  saveConfig(id);
+}
+
+let cid=0;
+function buildCards(items,side){
+  const groups={};
+  items.forEach(it=>{if(!groups[it.vh])groups[it.vh]=[];groups[it.vh].push(it);});
+  let html='';
+  const t=T[LANG];
+  Object.keys(groups).sort().forEach(vh=>{
+    const sideLabel=side==='zachod'?t.west:t.south;
+    html+=`<div class="vh-group"><div class="vh-title">${vh} \u2013 ${sideLabel}</div><div class="windows-grid">`;
+    groups[vh].forEach(item=>{
+      const id='c'+(++cid);
+      const st=loadSt(id);
+      const breite=st.breite||item.breite,hoehe=st.hoehe||item.hoehe;
+      const nW=typeof item.wings==='string'?parseInt(item.wings):item.wings;
+      const cls=['window-card'];
+      if(item.renov)cls.push('renov');if(item.neu)cls.push('neu');
+      const tags=[side,item.renov?'renov':'',item.neu?'neu':'',item.balkon?'balkon':''].filter(Boolean).join(' ');
+      const roomMain=LANG==='pl'?(T.pl.rooms[item.room]||item.room):(T.de.rooms[item.room]||item.room);
+      const roomSub=LANG==='pl'?(T.de.rooms[item.room]||item.room):(T.pl.rooms[item.room]||item.room);
+      const posLabel=t.pos[item.pos]||item.pos;
+      const note=LANG==='de'?item.noteDE:item.notePL;
+      const mat=st.mat||'',brand=st.brand||'',gealan=st.gealan||'',aluplast=st.aluplast||'',
+            wood=st.wood||'',glass=st.glass||'',colorIn=st.colorIn||'',colorOut=st.colorOut||'',onotes=st.onotes||'';
+      const brandVis=mat==='pcv'?'block':'none',woodVis=mat==='drewno'?'block':'none';
+      const gealanVis=(mat==='pcv'&&brand==='gealan')?'block':'none';
+      const aluplastVis=(mat==='pcv'&&brand==='aluplast')?'block':'none';
+
+      html+=`<div class="${cls.join(' ')}" data-tags="${tags}" data-search="${(item.vh+' '+item.pos+' '+item.room+' '+(T.de.rooms[item.room]||'')).toLowerCase()}" id="card-${id}">`;
+      html+=`<div class="card-header"><div class="room-name">${roomMain}<span class="lang2">${roomSub}</span></div><div class="location-tag">${item.vh} \u00B7 ${posLabel}</div></div>`;
+      html+=`<div class="badge-row"><span class="badge badge-count">${item.count} ${t.badges.count}</span><span class="badge badge-wings">${item.wings}-${t.badges.wings}</span>${item.renov?`<span class="badge badge-renov">${t.badges.renov}</span>`:''}${item.neu?`<span class="badge badge-neu">${t.badges.neu}</span>`:''}${item.balkon?`<span class="badge badge-balkon">${t.badges.balkon}</span>`:''}</div>`;
+      html+=`<div class="window-drawing">${drawWin(breite,hoehe,item.wings,id)}</div>`;
+      html+=`<div class="dims-row"><span class="dim-label">${t.width}</span><input class="dim-input" id="ib-${id}" type="number" value="${breite}" min="1" max="9999"><span class="dim-x">\u00D7</span><span class="dim-label">${t.height}</span><input class="dim-input" id="ih-${id}" type="number" value="${hoehe}" min="1" max="9999"><span class="dim-unit">cm</span><button class="dim-save" onclick="saveDims('${id}')">${t.save}</button><span class="dim-saved" id="saved-${id}">${t.saved}</span></div>`;
+
+      // MATERIAL
+      html+=`<div class="config-block"><div class="config-block-title">${t.materialTitle}</div>
+        <div class="form-row form-row-1"><div class="field-group"><span class="field-label">${t.materialTitle}</span><select class="config-select" id="mat-${id}" onchange="onMaterialChange('${id}')">${selOpts(t.material,mat)}</select></div></div>
+        <div id="brand-wrap-${id}" style="display:${brandVis}">
+          <div class="form-row form-row-1" style="margin-top:.3rem"><div class="field-group"><span class="field-label">${LANG==='pl'?'Producent':'Hersteller'}</span><select class="config-select" id="brand-${id}" onchange="onBrandChange('${id}')">${selOpts(t.pcvBrand,brand)}</select></div></div>
+          <div id="gealan-wrap-${id}" class="subseries-wrap${gealanVis==='block'?' visible':''}"><div class="form-row form-row-1" style="margin-top:.3rem"><div class="field-group"><span class="field-label">Gealan ${LANG==='pl'?'seria':'Serie'}</span><select class="config-select" id="gealan-${id}" onchange="saveConfig('${id}')">${selOpts(t.gealan,gealan)}</select></div></div></div>
+          <div id="aluplast-wrap-${id}" class="subseries-wrap${aluplastVis==='block'?' visible':''}"><div class="form-row form-row-1" style="margin-top:.3rem"><div class="field-group"><span class="field-label">Aluplast ${LANG==='pl'?'seria':'Serie'}</span><select class="config-select" id="aluplast-${id}" onchange="saveConfig('${id}')">${selOpts(t.aluplast,aluplast)}</select></div></div></div>
+        </div>
+        <div id="wood-wrap-${id}" style="display:${woodVis};margin-top:.3rem"><div class="form-row form-row-1"><div class="field-group"><span class="field-label">${LANG==='pl'?'Gatunek drewna':'Holzart'}</span><select class="config-select" id="wood-${id}" onchange="saveConfig('${id}')">${selOpts(t.wood,wood)}</select></div></div></div>
+        <div class="form-row form-row-1" style="margin-top:.3rem"><div class="field-group"><span class="field-label">${t.glassTitle}</span><select class="config-select" id="glass-${id}" onchange="saveConfig('${id}')">${selOpts(t.glass,glass)}</select></div></div>
+      </div>`;
+
+      // COLOR
+      html+=`<div class="config-block"><div class="config-block-title">${t.colorTitle}</div>
+        <div class="form-row form-row-2">
+          <div class="field-group"><span class="field-label">${t.colorIn}</span><input class="color-input" id="cin-${id}" type="text" value="${colorIn}" placeholder="${LANG==='pl'?'np. bia\u0142y RAL 9016':'z.B. wei\u00DF RAL 9016'}" oninput="saveConfig('${id}')"></div>
+          <div class="field-group"><span class="field-label">${t.colorOut}</span><input class="color-input" id="cout-${id}" type="text" value="${colorOut}" placeholder="${LANG==='pl'?'np. antracyt RAL 7016':'z.B. anthrazit RAL 7016'}" oninput="saveConfig('${id}')"></div>
+        </div>
+      </div>`;
+
+      // OPENING
+      html+=`<div class="config-block"><div class="config-block-title">${t.openingTitle}</div>`;
+      const nttype=st['nt_type']||'',ntdir=st['nt_dir']||'';
+      html+=`<div class="transom-row"><span class="transom-label">${t.transom}<span class="lang2">${LANG==='pl'?T.de.transom:T.pl.transom}</span></span><select class="opening-select" id="nt-${id}" onchange="saveConfig('${id}')">${selOpts(t.otype,nttype)}</select><select class="opening-select" id="ntd-${id}" onchange="saveConfig('${id}')">${selOpts(t.odir,ntdir)}</select></div>`;
+      for(let wi=1;wi<=nW;wi++){
+        const tval=st[`w${wi}_type`]||'',dval=st[`w${wi}_dir`]||'';
+        html+=`<div class="wing-row"><span class="wing-num">${t.wing} ${wi}<span class="lang2">${LANG==='pl'?T.de.wing:T.pl.wing} ${wi}</span></span><select class="opening-select" id="wt${wi}-${id}" onchange="saveConfig('${id}')">${selOpts(t.otype,tval)}</select><select class="opening-select" id="wd${wi}-${id}" onchange="saveConfig('${id}')">${selOpts(t.odir,dval)}</select></div>`;
+      }
+      html+=`<textarea class="opening-notes" id="onotes-${id}" placeholder="${t.notes}" onblur="saveConfig('${id}')">${onotes}</textarea></div>`;
+      if(item.renov&&note)html+=`<div class="renov-note">\u1F527 ${note}</div>`;
+      else if(!item.renov&&note)html+=`<div class="info-note">\u2139\uFE0F ${note}</div>`;
+      html+=`</div>`;
+    });
+    html+=`</div></div>`;
+  });
+  return html;
+}
+
+function saveDims(id){
+  const b=parseInt(document.getElementById('ib-'+id).value)||0;
+  const h=parseInt(document.getElementById('ih-'+id).value)||0;
+  const st=loadSt(id);st.breite=b;st.hoehe=h;saveSt(id,st);
+  const sb=document.getElementById('svg-b-'+id);const sh=document.getElementById('svg-h-'+id);
+  if(sb)sb.textContent=b+' cm';if(sh)sh.textContent=h+' cm';
+  const s=document.getElementById('saved-'+id);s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+
+function saveConfig(id){
+  const st=loadSt(id);
+  const g=n=>document.getElementById(n);
+  ['mat','brand','gealan','aluplast','wood','glass'].forEach(k=>{if(g(k+'-'+id))st[k]=g(k+'-'+id).value;});
+  if(g('cin-'+id))st.colorIn=g('cin-'+id).value;
+  if(g('cout-'+id))st.colorOut=g('cout-'+id).value;
+  if(g('nt-'+id))st.nt_type=g('nt-'+id).value;
+  if(g('ntd-'+id))st.nt_dir=g('ntd-'+id).value;
+  for(let wi=1;wi<=10;wi++){
+    if(g(`wt${wi}-${id}`))st[`w${wi}_type`]=g(`wt${wi}-${id}`).value;
+    if(g(`wd${wi}-${id}`))st[`w${wi}_dir`]=g(`wd${wi}-${id}`).value;
+    else break;
+  }
+  if(g('onotes-'+id))st.onotes=g('onotes-'+id).value;
+  saveSt(id,st);
+}
+
+function setLang(lang,btn){
+  LANG=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');document.documentElement.lang=lang;
+  document.getElementById('hdr-sub').textContent=T[lang].hdrSub;
+  document.getElementById('searchbox').placeholder=T[lang].searchPh;
+  document.getElementById('print-btn-label').textContent=T[lang].printBtn;
+  document.getElementById('lbl-export').textContent=T[lang].exportBtn;
+  document.getElementById('lbl-import').textContent=T[lang].importBtn;
+  document.getElementById('lbl-docx').textContent=lang==='pl'?'Pobierz DOCX':'DOCX herunterladen';
+  document.querySelectorAll('[data-pl]').forEach(el=>el.textContent=el.getAttribute('data-'+lang));
+  updateSyncStatus();cid=0;render();
+}
+
+function doPrint(){
+  const t=T[LANG];
+  document.getElementById('print-title').textContent=t.printTitle;
+  document.getElementById('print-sub').textContent=t.printSub;
+  document.getElementById('print-header').style.display='block';
+  window.print();
+  setTimeout(()=>document.getElementById('print-header').style.display='none',1500);
+}
+
+function doDocx(){
+  const lang=LANG;
+  const msg=lang==='pl'
+    ?'Aby wygenerowac plik DOCX: 1. Kliknij Eksport danych i pobierz plik JSON. 2. Wyslij plik JSON do Claude z prosba: Wygeneruj DOCX z tych danych po polsku. Lub: uzyj przycisku Drukuj -> Zapisz jako PDF!'
+    :'Um DOCX zu erstellen: 1. Klicken Sie Daten exportieren. 2. Senden Sie die JSON an Claude: Erstelle DOCX auf Deutsch. Oder: Drucken -> Als PDF speichern!';
+  alert(msg);
+}
+function render(){
+  const t=T[LANG];
+  document.getElementById('main').innerHTML=
+    `<div class="section-divider"><h2>${t.secWest}</h2></div>`+buildCards(DATA.zachod,'zachod')+
+    `<div class="section-divider"><h2>${t.secSouth}</h2></div>`+buildCards(DATA.poludnie,'poludnie');
+}
+
+function filterAll(btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.window-card,.vh-group,.section-divider').forEach(c=>c.classList.remove('hidden'));}
+function filterSide(side,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.window-card').forEach(c=>c.classList.toggle('hidden',!c.dataset.tags.includes(side)));checkEmpty();}
+function filterTag(tag,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.window-card').forEach(c=>c.classList.toggle('hidden',!c.dataset.tags.includes(tag)));checkEmpty();}
+function searchCards(val){const q=val.toLowerCase().trim();document.querySelectorAll('.window-card').forEach(c=>c.classList.toggle('hidden',q&&!c.dataset.search.includes(q)));checkEmpty();}
+function checkEmpty(){document.querySelectorAll('.vh-group').forEach(g=>{const v=[...g.querySelectorAll('.window-card')].some(c=>!c.classList.contains('hidden'));g.classList.toggle('hidden',!v);});}
+
+render();updateSyncStatus();
+</script>
+</body>
+</html>
